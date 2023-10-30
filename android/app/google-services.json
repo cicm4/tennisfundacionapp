@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "974215710764",
+    "project_id": "tennisfundacionapp",
+    "storage_bucket": "tennisfundacionapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974215710764:android:f472a2d5d49c0e3060e989",
+        "android_client_info": {
+          "package_name": "co.com.tennisfundacionapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6yvkWukDkRNs-mIysLrorLrmBgx1QX2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:974215710764:android:c7d6221664f6030d60e989",
+        "android_client_info": {
+          "package_name": "co.com.tennisfundacionapp.tennisfundacionapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6yvkWukDkRNs-mIysLrorLrmBgx1QX2M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
