@@ -1,27 +1,28 @@
-//This class is used only to authenticate the user & save the current user
-//It utilizes the firebase_auth package
-//It may use methods from the dbService class to create a user in the database
-//Thus it may only use the firebase_auth package and dbService to manage users
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:tennisfundacionapp/services/dbService.dart';
 
+/// This class is responsible for handling user authentication using Firebase.
 class AuthService {
+  // Stream of Firebase User to track user authentication state
   final userStream = FirebaseAuth.instance.authStateChanges();
 
+  // Current user instance
   final user = FirebaseAuth.instance.currentUser;
 
+  /// Sign in with email and password.
+  ///
+  /// This method attempts to sign in a user using their email and password.
+  /// If the user is not found in the database, it adds them.
+  ///
+  /// @param emailAddress The email address of the user.
+  /// @param password The password of the user.
   signInEmailAndPass({required emailAddress, required password}) async {
-    //singin in and out of app using email and password
     try {
-      await FirebaseAuth
-          .instance //should work but replace with final credential = await FirebaseAuth.instance if it does not
-          .signInWithEmailAndPassword(email: emailAddress, password: password);
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: emailAddress, password: password);
       if(await _isUserInDB(uid: user!.uid)){
         await _addNewUserToDB();
       }
-      
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         if (kDebugMode) {
@@ -35,13 +36,18 @@ class AuthService {
     }
   }
 
+  /// Sign out the current user.
+  ///
+  /// This method signs out the current user from the Firebase instance.
   signOut() async {
     await FirebaseAuth.instance.signOut();
   }
 
+  /// Add a new user to the database.
+  ///
+  /// This private method adds a new user to the database with their uid, email, displayName, photoUrl, and type.
   Future<void> _addNewUserToDB() async {
     try{
-
       String? uid = user!.uid;
       String? email = user!.email;
       String? displayName = user!.displayName;
@@ -66,6 +72,13 @@ class AuthService {
     }
   }
 
+  /// Check if a user is in the database.
+  ///
+  /// This private method checks if a user with a specific uid is in the database.
+  ///
+  /// @param uid The uid of the user to check.
+  ///
+  /// @return A Future that completes with a boolean. Returns true if the user is in the database, false otherwise.
   Future<bool> _isUserInDB({required String uid}) async {
     try{
       return DBService().isDataInDB(data: uid, path: 'users');
@@ -77,5 +90,4 @@ class AuthService {
     }
     return false;
   }
-
 }
