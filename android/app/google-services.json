@@ -12,7 +12,20 @@
           "package_name": "co.com.tennisfundacionapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "974215710764-vngs8cr1fe5i5t19f3bea2gkaf9u2gg5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.com.tennisfundacionapp",
+            "certificate_hash": "79a5ef53cd84f728319e3031a088d8d30571cc7a"
+          }
+        },
+        {
+          "client_id": "974215710764-htdo3rabk97r6a84s648h08qj07blp7o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB6yvkWukDkRNs-mIysLrorLrmBgx1QX2M"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "974215710764-htdo3rabk97r6a84s648h08qj07blp7o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "974215710764-viosd7a9roskdvrud1uq9q1p7qkl9cs7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "co.com.tennisfundacionapp.tennisfundacionapp"
+              }
+            }
+          ]
         }
       }
     },
@@ -31,7 +56,12 @@
           "package_name": "co.com.tennisfundacionapp.tennisfundacionapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "974215710764-htdo3rabk97r6a84s648h08qj07blp7o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyB6yvkWukDkRNs-mIysLrorLrmBgx1QX2M"
@@ -39,7 +69,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "974215710764-htdo3rabk97r6a84s648h08qj07blp7o.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "974215710764-viosd7a9roskdvrud1uq9q1p7qkl9cs7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "co.com.tennisfundacionapp.tennisfundacionapp"
+              }
+            }
+          ]
         }
       }
     }

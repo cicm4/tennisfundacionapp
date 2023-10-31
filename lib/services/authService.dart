@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tennisfundacionapp/services/dbService.dart';
 
 /// This class is responsible for handling user authentication using Firebase.
@@ -90,4 +91,41 @@ class AuthService {
     }
     return false;
   }
+
+/// Sign in with Google.
+///
+/// This method initiates the Google sign-in flow and signs in the user into the app using their Google account.
+/// If the user is not found in the database, it adds them.
+///
+/// @return A Future that completes when the sign-in process is done.
+Future<void> signInWithGoogle() async {
+  try {
+    // Trigger the Google sign-in flow
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+    // Create a new credential using the auth details
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+
+    // Sign in the user into the app using the credential
+    await FirebaseAuth.instance.signInWithCredential(credential);
+
+    // If the user is not found in the database, add them
+    if(await _isUserInDB(uid: user!.uid)){
+      await _addNewUserToDB();
+    }
+
+    return;
+  } catch (e) {
+    // If an error occurs, print the error if in debug mode
+    if (kDebugMode) {
+      print(e.toString());
+    }
+  }
+}
 }
