@@ -18,6 +18,8 @@ class AuthService {
   //database service that is used to add new users to firestore
   DBService dbs;
 
+  get currentUser => null;
+
   /// Sign in with email and password.
   ///
   /// This method attempts to sign in a user using their email and password.
