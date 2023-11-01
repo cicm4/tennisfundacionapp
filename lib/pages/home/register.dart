@@ -1,72 +1,73 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sign_in_button/sign_in_button.dart';
-
 import '../../services/authService.dart';
 import '../../shared/loading.dart';
 
-class Login extends StatefulWidget {
+class UserRegister extends StatefulWidget {
+
   final AuthService auth;
 
-  const Login({super.key, required this.auth});
+  const UserRegister({super.key, required this.auth});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<UserRegister> createState() => _UserRegisterState();
 }
 
-class _LoginState extends State<Login> {
+class _UserRegisterState extends State<UserRegister> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _securePasswordController = TextEditingController();
+  late String _errorText = '';
+  bool _isLoading = false; // Add this line
 
-  bool _isLoading = false;
-
-  Future<void> _signIn() async {
-    if (_formKey.currentState!.validate()) {
+  Future<void> _register() async {
+    if (_formKey.currentState!.validate() == true) {
       setState(() {
         _isLoading = true;
       });
-
-      try {
-        await widget.auth.signInEmailAndPass(
-          emailAddress: _emailController.text,
-          password: _passwordController.text,
-        );
-      } catch (e) {
-        if (kDebugMode) {
-          print(e.toString());
-        }
-      } finally {
+      String registration = await widget.auth.registerWithEmailAndPass(
+        emailAddress: _emailController.text,
+        password: _passwordController.text,
+      );
+      if (registration == 'Success') {
+        Navigator.pop(context);
+      } else {
         setState(() {
+          _errorText = registration;
           _isLoading = false;
         });
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error en el formulario'),
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Row(
+          children: [
+            Text(_emailController.text),
+            Text(_passwordController.text),
+            Text(_securePasswordController.text)
+          ],
         ),
-      );
+      ));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-        child: SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'Registro de usuario',
+          ),
+          backgroundColor: Colors.green[700],
+        ),
         backgroundColor: Colors.white,
-        body: Stack(
-          children: [
-            // Loading screen
-            if (_isLoading)
-              const Loading()
-            else
-              Form(
+        body: _isLoading
+            ? const Loading() // Add this line
+            : Form(
                 key: _formKey,
                 child: Column(
                   children: [
-                    SizedBox(
+                    Container(
                       width: double.infinity,
                       height: MediaQuery.of(context).size.height / 3,
                       child: const FlutterLogo(),
@@ -157,9 +158,48 @@ class _LoginState extends State<Login> {
                                     },
                                   ),
                                 ),
+                                const SizedBox(height: 15),
+                                const Text(
+                                  'Reingresar Contraseña',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 15),
+                                Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(12),
+                                    color: Colors.black,
+                                  ),
+                                  child: TextFormField(
+                                    controller: _securePasswordController,
+                                    obscureText: true,
+                                    style: const TextStyle(color: Colors.white),
+                                    decoration: const InputDecoration(
+                                      border: InputBorder.none,
+                                      prefixIcon: Icon(
+                                        Icons.lock,
+                                        color: Colors.white,
+                                      ),
+                                      hintText: 'Reingresar Contraseña',
+                                      hintStyle: TextStyle(color: Colors.white),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'Por favor, introduzca otra vez su contraseña.';
+                                      } else if (value !=
+                                          _passwordController.text) {
+                                        return 'Las contraseñas no coinciden.';
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
                                 const SizedBox(height: 35),
                                 GestureDetector(
-                                  onTap: _signIn,
+                                  onTap: _register,
                                   child: Container(
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(30),
@@ -169,7 +209,7 @@ class _LoginState extends State<Login> {
                                       child: Padding(
                                         padding: EdgeInsets.all(10.0),
                                         child: Text(
-                                          'Ingresar',
+                                          'Crear Cuenta',
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 30,
@@ -180,46 +220,10 @@ class _LoginState extends State<Login> {
                                     ),
                                   ),
                                 ),
-                                const SizedBox(height: 35),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SignInButton(
-                                      Buttons.google,
-                                      onPressed: () {
-                                        setState(() {
-                                          _isLoading = true;
-                                        });
-                                        widget.auth.signInWithGoogle();
-                                      },
-                                      text: 'Ingresar con Google',
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 80),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.pushNamed(context, '/register');
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(30),
-                                      color: Colors.white,
-                                    ),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Text(
-                                          'Crea tu cuenta',
-                                          style: TextStyle(
-                                            color: Colors.green[700],
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w500,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                const SizedBox(height: 15),
+                                Text(
+                                  _errorText,
+                                  style: const TextStyle(color: Colors.red),
                                 ),
                               ],
                             ),
@@ -230,10 +234,8 @@ class _LoginState extends State<Login> {
                   ],
                 ),
               ),
-          ],
-        ),
       ),
-    ));
+    );
   }
 
   @override
