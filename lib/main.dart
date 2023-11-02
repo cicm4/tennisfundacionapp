@@ -16,15 +16,11 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-  final dbs = DBService();
-  final auth = AuthService(dbs);
-  runApp(MyApp(auth: auth));
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key, required this.auth});
-
-  final AuthService auth;
+  const MyApp({super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();

@@ -51,7 +51,7 @@ class AuthService {
   ///
   /// This method signs out the current user from the google service.
   /// This method then signs out the current user from the Firebase instance.
-  signOut() async {
+  static signOut() async {
     try {
       //sign out of google
       GoogleSignIn().signOut();
