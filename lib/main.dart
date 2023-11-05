@@ -64,15 +64,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    
-    AuthService auth = AuthService(DBService());
+
+    DBService dbs = DBService();
+    AuthService auth = AuthService(dbs);
     UserService us = UserService();
 
     return StreamProvider<User?>.value(
       value: us.userStream,
       initialData: us.user,
       child: MaterialApp(
-        routes: getAppRoutes(auth),
+        routes: getAppRoutes(auth, dbs),
         theme: generalTheme,
         home: Wrapper(auth: auth),
       ),

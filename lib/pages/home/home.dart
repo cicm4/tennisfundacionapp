@@ -35,6 +35,21 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
+            const SizedBox(height: 20), // Add some spacing
+            GestureDetector(
+              onTap: () {
+                // Call your sign-out function here
+                Navigator.pushNamed(context, '/images');
+              },
+              child: const Text(
+                'Images',
+                style: TextStyle(
+                  fontSize: 14, // Making text small
+                  color: Colors.blue, // Text color blue
+                  decoration: TextDecoration.underline, // Underlined text
+                ),
+              ),
+            ),
           ],
         ),
       ),
