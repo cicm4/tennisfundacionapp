@@ -88,7 +88,7 @@ class SpecificImageView extends StatelessWidget {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (snapshot.hasData) {
             String imageUrl = snapshot.data![0] as String;
-            Map<String, dynamic?>? metaData = snapshot.data![1] as Map<String, dynamic>?;
+            Map<String, dynamic>? metaData = snapshot.data![1] as Map<String, dynamic>?;
             return Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
