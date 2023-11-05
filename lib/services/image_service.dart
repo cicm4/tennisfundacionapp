@@ -63,7 +63,7 @@ class ImageService {
       // Create a new map containing only 'user' and 'timestamp'
       Map<String, dynamic> filteredData = {
         'Name': originalData['Name'] ?? 'Unknown',
-        'TimeStamp': originalData['timestamp'] ?? 'Unknown',
+        'TimeStamp': originalData['TimeStamp'] ?? 'Unknown',
         'User': originalData['User_Name'] ?? 'Unknown',
       };
 
@@ -200,7 +200,7 @@ class ImageService {
         'LRURL': lrurl,
         'Reference': 'Images/$name',
         'User_UID': us.user!.uid,
-        'User_Name': us.user!.uid,
+        'User_Name': us.user!.displayName,
         'TimeStamp': DateTime.now(),
       };
       return await dbs.addEntryToDBWithName(
