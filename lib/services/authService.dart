@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:tennisfundacionapp/services/dbService.dart';
+import 'package:tennisfundacionapp/services/userService.dart';
 
 /// This class is responsible for handling user authentication using Firebase.
 class AuthService {
@@ -10,10 +11,6 @@ class AuthService {
   AuthService(this.dbs);
 
   // Stream of Firebase User to track user authentication state
-  final userStream = FirebaseAuth.instance.authStateChanges();
-
-  // Current user instance
-  final user = FirebaseAuth.instance.currentUser;
 
   //database service that is used to add new users to firestore
   DBService dbs;
@@ -29,9 +26,10 @@ class AuthService {
   /// @param password The password of the user.
   signInEmailAndPass({required emailAddress, required password}) async {
     try {
+      UserService us = UserService();
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: emailAddress, password: password);
-      if (await _isUserInDB(uid: user!.uid)) {
+      if (await _isUserInDB(uid: us.user!.uid)) {
         await _addNewUserToDB();
       }
     } on FirebaseAuthException catch (e) {
@@ -68,10 +66,11 @@ class AuthService {
   /// This private method adds a new user to the database with their uid, email, displayName, photoUrl, and type.
   Future<void> _addNewUserToDB() async {
     try {
-      String? uid = user!.uid;
-      String? email = user!.email;
-      String? displayName = user!.displayName;
-      String? photoUrl = user!.photoURL;
+      UserService us = UserService();
+      String? uid = us.user!.uid;
+      String? email = us.user!.email;
+      String? displayName = us.user!.displayName;
+      String? photoUrl = us.user!.photoURL;
       String? type = 'donor';
 
       photoUrl ??= '';
@@ -136,8 +135,9 @@ class AuthService {
       // Sign in the user into the app using the credential
       await FirebaseAuth.instance.signInWithCredential(credential);
 
+      UserService us = UserService();
       // If the user is not found in the database, add them
-      if (await _isUserInDB(uid: user!.uid)) {
+      if (await _isUserInDB(uid: us.user!.uid)) {
         await _addNewUserToDB();
       }
 

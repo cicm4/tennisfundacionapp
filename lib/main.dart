@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tennisfundacionapp/services/authService.dart';
 import 'package:tennisfundacionapp/services/dbService.dart';
+import 'package:tennisfundacionapp/services/userService.dart';
 import 'package:tennisfundacionapp/shared/routes.dart';
 import 'package:tennisfundacionapp/shared/theme.dart';
 import 'package:tennisfundacionapp/wrapper.dart';
@@ -50,9 +51,10 @@ class _MyAppState extends State<MyApp> {
           // ignore: avoid_print
           print('snapshot.connectionState == ConnectionState.done');
           AuthService auth = AuthService(DBService());
+          UserService us = UserService();
           return StreamProvider<User?>.value(
-            value: auth.userStream,
-            initialData: auth.user,
+            value: us.userStream,
+            initialData: us.user,
             child: MaterialApp(
               routes: getAppRoutes(auth),
               theme: generalTheme,
