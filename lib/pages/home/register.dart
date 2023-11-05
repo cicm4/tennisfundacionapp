@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../services/authService.dart';
+import '../../services/authentication_service.dart';
 import '../../shared/loading.dart';
 
 class UserRegister extends StatefulWidget {
@@ -30,6 +30,7 @@ class _UserRegisterState extends State<UserRegister> {
           password: _passwordController.text,
           name: _nameController.text);
       if (registration == 'Success') {
+        // ignore: use_build_context_synchronously
         Navigator.pop(context);
       } else {
         setState(() {
@@ -277,6 +278,8 @@ class _UserRegisterState extends State<UserRegister> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _securePasswordController.dispose();
+    _nameController.dispose();
     super.dispose();
   }
 }

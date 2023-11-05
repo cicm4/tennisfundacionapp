@@ -1,8 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:tennisfundacionapp/services/dbService.dart';
-import 'package:tennisfundacionapp/services/userService.dart';
+import 'package:tennisfundacionapp/services/database_service.dart';
+import 'package:tennisfundacionapp/services/user_service.dart';
 
 /// This class is responsible for handling user authentication using Firebase.
 class AuthService {
@@ -14,34 +14,62 @@ class AuthService {
 
   //database service that is used to add new users to firestore
   DBService dbs;
-  /// Sign in with email and password.
-  ///
-  /// This method attempts to sign in a user using their email and password.
-  /// If the user is not found in the database, it adds them.
-  ///
-  /// @param emailAddress The email address of the user.
-  /// @param password The password of the user.
-  signInEmailAndPass({required emailAddress, required password}) async {
-    try {
-      UserService us = UserService();
-      await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: emailAddress, password: password);
-      bool isUserInDB = await _isUserInDB(uid: us.user?.uid);
-      if (isUserInDB == false) {
-        await _addNewUserToDB();
+
+
+ 
+/// Sign in with email and password.
+///
+/// This method attempts to sign in a user using their email and password.
+/// If the user is not found in the database, it adds them.
+///
+/// @param emailAddress The email address of the user.
+/// @param password The password of the user.
+///
+/// @return A Future that completes with a boolean if the sign-in process is successful, or with an error code if an error occurs.
+Future<dynamic> signInEmailAndPass({required emailAddress, required password}) async {
+  try {
+    // Create a UserService instance
+    UserService us = UserService();
+    // Attempt to sign in the user using their email and password
+    await FirebaseAuth.instance
+        .signInWithEmailAndPassword(email: emailAddress, password: password);
+    // Check if the user is in the database
+    bool isUserInDB = await _isUserInDB(uid: us.user?.uid);
+    // If the user is not found in the database, add them
+    if (isUserInDB == false) {
+      await _addNewUserToDB();
+    }
+    // If the sign-in process is successful, return true
+    return true;
+  } on FirebaseAuthException catch (e) {
+    // Handle specific FirebaseAuth exceptions
+    if (e.code == 'user-not-found') {
+      if (kDebugMode) {
+        print('No user found for that email.');
       }
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        if (kDebugMode) {
-          print('No user found for that email.');
-        }
-      } else if (e.code == 'wrong-password') {
-        if (kDebugMode) {
-          print('Wrong password provided for that user.');
-        }
+      // Return the error code
+      return "No se encontro el usuario";
+    } else if (e.code == 'wrong-password') {
+      if (kDebugMode) {
+        print('Wrong password provided for that user.');
       }
+      // Return the error code
+      return "Contraseña incorrecta";
+    } else if (e.code == 'INVALID_LOGIN_CREDENTIALS') {
+      if (kDebugMode) {
+        print('invalid credentials for login');
+      }
+      // Return the error code
+      return "Credenciales de inicio de sesión no válidas";
+    } else {
+      if (kDebugMode) {
+        print(e.code);
+      }
+      // Return the error code
+      return e.code;
     }
   }
+}
 
   /// Sign out the current user.
   ///

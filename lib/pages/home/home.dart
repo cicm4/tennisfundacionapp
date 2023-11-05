@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tennisfundacionapp/services/authService.dart';
+
+import '../../services/authentication_service.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});

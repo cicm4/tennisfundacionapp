@@ -7,56 +7,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:974215710764:android:f472a2d5d49c0e3060e989",
-        "android_client_info": {
-          "package_name": "co.com.tennisfundacionapp"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "974215710764-vngs8cr1fe5i5t19f3bea2gkaf9u2gg5.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "co.com.tennisfundacionapp",
-            "certificate_hash": "79a5ef53cd84f728319e3031a088d8d30571cc7a"
-          }
-        },
-        {
-          "client_id": "974215710764-htdo3rabk97r6a84s648h08qj07blp7o.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyB6yvkWukDkRNs-mIysLrorLrmBgx1QX2M"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "974215710764-htdo3rabk97r6a84s648h08qj07blp7o.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "974215710764-viosd7a9roskdvrud1uq9q1p7qkl9cs7.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "co.com.tennisfundacionapp.tennisfundacionapp"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:974215710764:android:c7d6221664f6030d60e989",
         "android_client_info": {
           "package_name": "co.com.tennisfundacionapp.tennisfundacionapp"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "974215710764-s0g52gbbqes5852d70fd4cethimu6m5t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.com.tennisfundacionapp.tennisfundacionapp",
+            "certificate_hash": "79a5ef53cd84f728319e3031a088d8d30571cc7a"
+          }
+        },
         {
           "client_id": "974215710764-htdo3rabk97r6a84s648h08qj07blp7o.apps.googleusercontent.com",
           "client_type": 3

@@ -63,6 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '974215710764',
     projectId: 'tennisfundacionapp',
     storageBucket: 'tennisfundacionapp.appspot.com',
+    androidClientId: '974215710764-s0g52gbbqes5852d70fd4cethimu6m5t.apps.googleusercontent.com',
+    iosClientId: '974215710764-viosd7a9roskdvrud1uq9q1p7qkl9cs7.apps.googleusercontent.com',
     iosBundleId: 'co.com.tennisfundacionapp.tennisfundacionapp',
   );
 }

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 
-import '../../services/authService.dart';
+import '../../services/authentication_service.dart';
 import '../../shared/loading.dart';
 
 class Login extends StatefulWidget {
@@ -22,33 +22,42 @@ class _LoginState extends State<Login> {
   bool _isLoading = false;
 
   Future<void> _signIn() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+  if (_formKey.currentState!.validate()) {
+    setState(() {
+      _isLoading = true;
+    });
 
-      try {
-        await widget.auth.signInEmailAndPass(
-          emailAddress: _emailController.text,
-          password: _passwordController.text,
-        );
-      } catch (e) {
-        if (kDebugMode) {
-          print(e.toString());
-        }
-      } finally {
-        setState(() {
-          _isLoading = false;
-        });
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Error en el formulario'),
-        ),
+    try {
+      final result = await widget.auth.signInEmailAndPass(
+        emailAddress: _emailController.text,
+        password: _passwordController.text,
       );
+      if(result is String){
+        // ignore: use_build_context_synchronously
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Error: $result", style: TextStyle(color: Colors.red[900]),),
+          ),
+        );
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
+  } else {
+    //shows that there was an error on screen
+    ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Error en el formulario"),
+          ),
+        );
   }
+}
 
   @override
   Widget build(BuildContext context) {
