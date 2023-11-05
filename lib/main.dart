@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:tennisfundacionapp/services/authentication_service.dart';
 import 'package:tennisfundacionapp/services/database_service.dart';
+import 'package:tennisfundacionapp/services/storage_service.dart';
 import 'package:tennisfundacionapp/services/user_service.dart';
 import 'package:tennisfundacionapp/shared/routes.dart';
 import 'package:tennisfundacionapp/shared/theme.dart';
@@ -65,15 +66,20 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
 
+
+    //these services will be initialized only once
     DBService dbs = DBService();
     AuthService auth = AuthService(dbs);
+    StorageService st = StorageService();
+    
+    //thse services may be initialized multiple times
     UserService us = UserService();
 
     return StreamProvider<User?>.value(
       value: us.userStream,
       initialData: us.user,
       child: MaterialApp(
-        routes: getAppRoutes(auth, dbs),
+        routes: getAppRoutes(auth, dbs, st),
         theme: generalTheme,
         home: Wrapper(auth: auth),
       ),

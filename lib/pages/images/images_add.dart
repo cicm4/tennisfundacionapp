@@ -2,16 +2,23 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:tennisfundacionapp/services/database_service.dart';
+import 'package:tennisfundacionapp/services/image_service.dart';
+import 'package:tennisfundacionapp/services/storage_service.dart';
+import 'package:tennisfundacionapp/services/user_service.dart';
 import '../../shared/loading.dart';
 
-class AddPhotoPage extends StatefulWidget {
-  const AddPhotoPage({super.key});
+class AddImagesPage extends StatefulWidget {
+  final ImageService imageService = ImageService(compressionPercent: 15, maxHeight: 1920, maxWidth: 1080);
+  final StorageService storageService;
+  final DBService dbService;
+  AddImagesPage({super.key, required this.storageService, required this.dbService});
 
   @override
-  State<AddPhotoPage> createState() => _AddPhotoPageState();
+  State<AddImagesPage> createState() => _AddImagesPageState();
 }
 
-class _AddPhotoPageState extends State<AddPhotoPage> {
+class _AddImagesPageState extends State<AddImagesPage> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   List<File>? _files;
@@ -24,15 +31,18 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
     super.dispose();
   }
 
-  Future<void> uploadPhoto() async {
+  Future<void> uploadImage() async {
     if (_formKey.currentState!.validate()) {
       setState(() {
         _isLoading = true;
       });
       try {
-        String result = await PhotoService().uploadToStorage(
+        String result = await widget.imageService.uploadToStorage(
           name: _nameController.text,
           files: _files!,
+          st: widget.storageService,
+          dbs: widget.dbService,
+          us: UserService(),
         );
         setState(() {
           _isLoading = false;
@@ -49,7 +59,7 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
                 content: const SingleChildScrollView(
                   child: ListBody(
                     children: <Widget>[
-                      Text('Your photo has been successfully uploaded.'),
+                      Text('Proceso Exitoso.'),
                     ],
                   ),
                 ),
@@ -108,9 +118,9 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
     }
   }
 
-  Future<List<File>?> selectPhoto() async {
+  Future<List<File>?> selectImage() async {
     try {
-      var files = await PhotoService().pickImageHD();
+      var files = await widget.imageService.pickImageHD();
       return files;
     } catch (e) {
       if (kDebugMode) {
@@ -174,7 +184,7 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
                             filled: true,
                             fillColor: Colors.white,
                             border: OutlineInputBorder(),
-                            labelText: 'Photo Name',
+                            labelText: 'Nombre de Imagen',
                             labelStyle: TextStyle(color: Colors.black),
                           ),
                           validator: (value) {
@@ -198,7 +208,7 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
                         ),
                       ),
                       onPressed: () async {
-                        var files = await selectPhoto();
+                        var files = await selectImage();
                         if (files != null) {
                           setState(() {
                             _files = files;
@@ -225,7 +235,7 @@ class _AddPhotoPageState extends State<AddPhotoPage> {
                           borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      onPressed: () => uploadPhoto(),
+                      onPressed: () => uploadImage(),
                       child: Container(
                         alignment: Alignment.center,
                         width: double.infinity,

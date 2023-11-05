@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
@@ -7,16 +8,73 @@ import 'package:tennisfundacionapp/services/database_service.dart';
 import 'package:tennisfundacionapp/services/storage_service.dart';
 import 'package:tennisfundacionapp/services/user_service.dart';
 
-
-/// `ImageService` class.
+/// `ImageService` is a class that provides methods for handling images.
 ///
-/// This class provides methods to pick an image from the gallery and reduce its quality.
-class ImageService{
+/// It includes methods for retrieving image metadata from a database, checking if a file is an image,
+/// picking an image from the gallery, reducing the quality of an image, retrieving an image URL from the database,
+/// adding a photo to the database, and uploading an image to storage.
+///
+/// The class constructor takes three parameters:
+/// - `maxHeight`: The maximum height for the image picker.
+/// - `maxWidth`: The maximum width for the image picker.
+/// - `compressionPercent`: The percentage by which to reduce the image quality.
+///
+/// Example usage:
+/// ```dart
+/// var imageService = ImageService(maxHeight: 600.0, maxWidth: 800.0, compressionPercent: 80);
+/// ```
+///
+/// Note: This class requires instances of `DBService`, `UserService`, and `StorageService` for some of its methods.
+class ImageService {
   double maxHeight;
   double maxWidth;
   int compressionPercent;
 
-  ImageService({required this.maxHeight, required this.maxWidth, required this.compressionPercent});
+  ImageService(
+      {required this.maxHeight,
+      required this.maxWidth,
+      required this.compressionPercent});
+
+
+
+  /// Retrieves metadata of an image from the database.
+  ///
+  /// This method takes a name, a path, and a `DBService` instance.
+  /// It uses the `getFromDB` method of `DBService` to retrieve the image data from the database, and then extracts the metadata from the data.
+  ///
+  /// @param name The name of the image.
+  /// @param path The path where the image data is stored in the database.
+  /// @param dbService A `DBService` instance.
+  ///
+  /// @return A Future that completes with a map containing the image metadata. If the image data is not found or an error occurs, it returns null.
+  Future<Map<String, dynamic>?> getImageMetaData(
+      {required String name, 
+      required String path,
+      required DBService dbService
+      }) async {
+    try {
+      Map<String, dynamic>? originalData =
+          await dbService.getFromDB(path: 'images', data: name);
+
+      if (originalData == null) {
+        return null;
+      }
+
+      // Create a new map containing only 'user' and 'timestamp'
+      Map<String, dynamic> filteredData = {
+        'Name': originalData['Name'] ?? 'Unknown',
+        'TimeStamp': originalData['timestamp'] ?? 'Unknown',
+        'User': originalData['User_Name'] ?? 'Unknown',
+      };
+
+      return filteredData;
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+      return null;
+    }
+  }
 
   /// Checks if a file is an image.
   ///
@@ -49,7 +107,8 @@ class ImageService{
 
     if (result != null) {
       File originalImage = File(result.path);
-      File reducedImage = await _reduceImageQuality(originalImage, compressionPercent);
+      File reducedImage =
+          await _reduceImageQuality(originalImage, compressionPercent);
       return [originalImage, reducedImage];
     } else {
       // User canceled the picker
@@ -66,7 +125,8 @@ class ImageService{
   /// @param reductionPercent The percentage by which to reduce the image quality.
   ///
   /// @return A Future that completes with the reduced image file. If the image compression fails, it throws an exception.
-  Future<File> _reduceImageQuality(File originalFile, int reductionPercent) async {
+  Future<File> _reduceImageQuality(
+      File originalFile, int reductionPercent) async {
     // use a library like flutter_image_compress to reduce image quality
     final bytes = await FlutterImageCompress.compressWithFile(
       originalFile.absolute.path,
@@ -92,23 +152,26 @@ class ImageService{
   /// @param dbs A `DBService` instance.
   ///
   /// @return A Future that completes with the image URL. If the URL is not found, it returns an empty string.
-  static Future<String> getImageUrl({required String imageName, required bool isLowRes, required DBService dbService}) async {
+  static Future<String> getImageUrl(
+      {required String imageName,
+      required bool isLowRes,
+      required DBService dbService}) async {
     // Determine the key to use to extract the URL from the image data
     String urlString;
-    if(isLowRes){
+    if (isLowRes) {
       urlString = 'LRURL';
     } else {
       urlString = 'URL';
     }
 
     // Retrieve the image data from the database
-    Map<String, dynamic>? imageData = await dbService.getFromDB(path: 'images', data: imageName);
+    Map<String, dynamic>? imageData =
+        await dbService.getFromDB(path: 'images', data: imageName);
     // Extract the URL from the imageData map using the 'URL' key
     return imageData?[urlString] as String? ?? '';
   }
 
-
-  /// Adds a photo to the database.
+  /// Adds a image to the database.
   ///
   /// This method takes a name, a `UserService` instance, a `DBService` instance, and a `StorageService` instance.
   /// It creates a data map with the image details and uses the `addEntryToDBWithName` method of `DBService` to add the image to the database.
@@ -119,27 +182,36 @@ class ImageService{
   /// @param st A `StorageService` instance.
   ///
   /// @return A Future that completes with a boolean indicating whether the image was successfully added to the database.
-  Future<bool> addPhotoToDB({required String name, required UserService us, required DBService dbs, required StorageService st}) async{
+  Future<bool> addImageToDB(
+      {required String name,
+      required UserService us,
+      required DBService dbs,
+      required StorageService st}) async {
     try {
       String? user = us.user?.displayName;
       user ??= us.user?.email;
+      String? url =
+          await st.getFileFromST(data: name, path: 'Images').getDownloadURL();
+      String? lrurl =
+          await st.getFileFromST(data: name, path: 'LRImages').getDownloadURL();
       var data = {
         'Name': name,
-        'URL': st.getFileFromST(data: name, path: 'Images').getDownloadURL(),
-        'LRURL': st.getFileFromST(data: name, path: 'LRImages').getDownloadURL(),
+        'URL': url,
+        'LRURL': lrurl,
         'Reference': 'Images/$name',
         'User_UID': us.user!.uid,
         'User_Name': us.user!.uid,
         'TimeStamp': DateTime.now(),
       };
-      return await dbs.addEntryToDBWithName(path: 'images', entry: data, name: name);
-  } catch (e) {
-    //print(e.toString()); //if in debug mode
-    return false;
+      return await dbs.addEntryToDBWithName(
+          path: 'images', entry: data, name: name);
+    } catch (e) {
+      //print(e.toString()); //if in debug mode
+      return false;
+    }
   }
-}
 
-/// Uploads an image to storage.
+  /// Uploads an image to storage.
   ///
   /// This method takes a name, a list of files, a `StorageService` instance, a `DBService` instance, and a `UserService` instance.
   /// It checks if a file with the same name already exists in storage and if the file is an image.
@@ -153,7 +225,11 @@ class ImageService{
   ///
   /// @return A Future that completes with a string indicating whether the image was successfully uploaded to storage.
   Future<String> uploadToStorage(
-      {required String name, required List<File> files, required StorageService st, required DBService dbs, required UserService us}) async {
+      {required String name,
+      required List<File> files,
+      required StorageService st,
+      required DBService dbs,
+      required UserService us}) async {
     // Check if a file with the same name already exists
     if (await StorageService().isFileInST(data: name, path: 'Images') &&
         isImage(file: files[0])) {
@@ -161,14 +237,13 @@ class ImageService{
     }
 
     // upload high res image
-    await StorageService()
-        .addFile(file: files[0], data: name, path: 'Images');
+    await StorageService().addFile(file: files[0], data: name, path: 'Images');
 
     // upload low res image
     await StorageService()
         .addFile(file: files[1], data: name, path: 'LRImages');
 
-    await addPhotoToDB(name: name, us: us, dbs: dbs, st: st);
+    await addImageToDB(name: name, us: us, dbs: dbs, st: st);
 
     return 'File uploaded successfully.';
   }

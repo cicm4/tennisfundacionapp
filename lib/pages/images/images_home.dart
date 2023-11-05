@@ -5,11 +5,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:tennisfundacionapp/services/database_service.dart';
 import 'package:tennisfundacionapp/services/image_service.dart';
+import 'package:tennisfundacionapp/services/storage_service.dart';
 
 class ImageGaleryHome extends StatefulWidget {
   final DBService dbs;
+  final StorageService st;
 
-  const ImageGaleryHome({super.key, required this.dbs});
+  const ImageGaleryHome({super.key, required this.dbs, required this.st});
 
   @override
   State<ImageGaleryHome> createState() => _ImageGaleryHomeState();
@@ -65,7 +67,7 @@ class _ImageGaleryHomeState extends State<ImageGaleryHome> {
   final _productsSearcher = HitsSearcher(
       applicationID: 'FMZTHT04WY',
       apiKey: '797c04401244a85c67630a61ea24776b',
-      indexName: 'photos');
+      indexName: 'images');
   final _searchTextController = TextEditingController();
   final PagingController<int, ImageAlgolia> _pagingController =
       PagingController(firstPageKey: 0);
@@ -222,7 +224,7 @@ class _ImageGaleryHomeState extends State<ImageGaleryHome> {
                             '/indivFoto',
                             arguments: {
                               'name': images[index].name,
-                              'lowResUrl': snapshot.data.toString()
+                              'lowResUrl': snapshot.data
                             },
                           ); // Navigate on tap
                         },
@@ -243,7 +245,7 @@ class _ImageGaleryHomeState extends State<ImageGaleryHome> {
             floatingActionButton: FloatingActionButton(
               backgroundColor: Colors.green[700],
               onPressed: () {
-                Navigator.pushNamed(context, '/addFoto');
+                Navigator.pushNamed(context, '/addImage');
               },
               child: const Icon(Icons.add),
             ),
