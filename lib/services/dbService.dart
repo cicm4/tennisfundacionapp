@@ -104,6 +104,38 @@ Future<bool> addEntryToDB(
     return false;
   }
 
+/// Adds an entry to the database with a specific name.
+///
+/// This function attempts to add a new entry with a specific name to a specified path in the database.
+/// It requires a path, an entry, and a name as parameters. The entry parameter is expected to be a map of key-value pairs representing the document fields.
+/// The name parameter is used as the document ID for the new entry.
+///
+/// This function is similar to `addEntryToDB`, but it allows you to specify the document ID instead of having it automatically generated.
+///
+/// @param path The path in the database where the new entry will be added.
+/// @param entry A map of key-value pairs representing the document fields.
+/// @param name The document ID for the new entry.
+///
+/// @return A Future that completes with a boolean. Returns true if the entry is successfully added, false otherwise.
+Future<bool> addEntryToDBWithName(
+      {required String path,
+      required Map<String, dynamic> entry,
+      required String name}) async {
+    try {
+      // Add the new document to the database with the specified name as the document ID
+      await db.collection(path).doc(name).set(entry);
+      // If the document is successfully added, return true
+      return true;
+    } catch (e) {
+      // If an error occurs, print the error if in debug mode
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+    // If an error occurs, return false
+    return false;
+  }
+
   /// Deletes a document from the database.
   ///
   /// This function attempts to delete a document from a specified path in the database.

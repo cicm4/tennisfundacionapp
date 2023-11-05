@@ -14,9 +14,6 @@ class AuthService {
 
   //database service that is used to add new users to firestore
   DBService dbs;
-
-  get currentUser => null;
-
   /// Sign in with email and password.
   ///
   /// This method attempts to sign in a user using their email and password.
@@ -29,7 +26,8 @@ class AuthService {
       UserService us = UserService();
       await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: emailAddress, password: password);
-      if (await _isUserInDB(uid: us.user!.uid)) {
+      bool isUserInDB = await _isUserInDB(uid: us.user?.uid);
+      if (isUserInDB == false) {
         await _addNewUserToDB();
       }
     } on FirebaseAuthException catch (e) {
@@ -64,7 +62,7 @@ class AuthService {
   /// Add a new user to the database.
   ///
   /// This private method adds a new user to the database with their uid, email, displayName, photoUrl, and type.
-  Future<void> _addNewUserToDB() async {
+  Future<void> _addNewUserToDB({String? name}) async {
     try {
       UserService us = UserService();
       String? uid = us.user!.uid;
@@ -72,6 +70,8 @@ class AuthService {
       String? displayName = us.user!.displayName;
       String? photoUrl = us.user!.photoURL;
       String? type = 'donor';
+
+      displayName ??= name;
 
       photoUrl ??= '';
 
@@ -84,7 +84,7 @@ class AuthService {
       };
 
       await dbs
-          .addEntryToDB(path: 'users', entry: newUser);
+          .addEntryToDBWithName(path: 'users', entry: newUser, name: uid);
     } catch (e) {
       if (kDebugMode) {
         print(e);
@@ -99,7 +99,10 @@ class AuthService {
   /// @param uid The uid of the user to check.
   ///
   /// @return A Future that completes with a boolean. Returns true if the user is in the database, false otherwise.
-  Future<bool> _isUserInDB({required String uid}) async {
+  Future<bool> _isUserInDB({String? uid}) async {
+    if (uid == null) {
+      return false;
+    }
     try {
       return dbs.isDataInDB(data: uid, path: 'users');
     } catch (e) {
@@ -136,8 +139,10 @@ class AuthService {
       await FirebaseAuth.instance.signInWithCredential(credential);
 
       UserService us = UserService();
+
+      bool isUserInDB = await _isUserInDB(uid: us.user?.uid);
       // If the user is not found in the database, add them
-      if (await _isUserInDB(uid: us.user!.uid)) {
+      if (isUserInDB == false) {
         await _addNewUserToDB();
       }
 
@@ -169,7 +174,7 @@ Future<String> registerWithEmailAndPass(
         password: password,
       );
       // Add the new user to the database
-      await _addNewUserToDB();
+      await _addNewUserToDB(name: name);
     } on FirebaseAuthException catch (e) {
       // Handle specific FirebaseAuth exceptions
       if (e.code == 'weak-password') {
