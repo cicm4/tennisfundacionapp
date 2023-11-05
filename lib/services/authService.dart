@@ -85,7 +85,7 @@ class AuthService {
       };
 
       await dbs
-          .addEntryToDB(path: 'users', data: user!.uid, entry: newUser);
+          .addEntryToDB(path: 'users', entry: newUser);
     } catch (e) {
       if (kDebugMode) {
         print(e);

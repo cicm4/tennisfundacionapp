@@ -77,23 +77,21 @@ class DBService {
     return null;
   }
 
-  /// Adds an entry to the database.
-  ///
-  /// This function adds a new document to a specified path in the database.
-  /// It requires a path, an entry, and data as parameters. The data parameter is expected to be the name of the new document.
-  ///
-  /// @param path The path in the database where the new document will be added.
-  /// @param entry The data to be added to the new document. It should be a map where the keys are the field names and the values are the field values.
-  /// @param data The name of the new document.
-  ///
-  /// @return A Future that completes with a boolean. Returns true if the document is successfully added, false otherwise.
-  Future<bool> addEntryToDB(
+/// Adds an entry to the database.
+///
+/// This function attempts to add a new entry to a specified path in the database.
+/// It requires a path and an entry as parameters. The entry parameter is expected to be a map of key-value pairs representing the document fields.
+///
+/// @param path The path in the database where the new entry will be added.
+/// @param entry A map of key-value pairs representing the document fields.
+///
+/// @return A Future that completes with a boolean. Returns true if the entry is successfully added, false otherwise.
+Future<bool> addEntryToDB(
       {required String path,
-      required Map<String, dynamic> entry,
-      required String data}) async {
+      required Map<String, dynamic> entry,}) async {
     try {
       // Add the new document to the database
-      await db.collection(path).doc(data).set(entry);
+      await db.collection(path).add(entry);
       // If the document is successfully added, return true
       return true;
     } catch (e) {
