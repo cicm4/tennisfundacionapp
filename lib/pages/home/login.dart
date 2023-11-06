@@ -78,7 +78,12 @@ class _LoginState extends State<Login> {
                     SizedBox(
                       width: double.infinity,
                       height: MediaQuery.of(context).size.height / 3,
-                      child: const FlutterLogo(),
+                      child: const SafeArea(
+                        child: Padding(
+                          padding: EdgeInsets.fromLTRB(8, 25, 8, 0),
+                          child: Image(image: AssetImage('assets/logo.jpg')),
+                        ),
+                      ),
                     ),
                     Expanded(
                       child: Container(
