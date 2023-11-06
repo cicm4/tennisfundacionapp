@@ -103,6 +103,7 @@ class _AddImagesPageState extends State<AddImagesPage> {
               });
         }
       } catch (e) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Error en el formulario'),

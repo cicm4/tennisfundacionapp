@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:algolia_helper_flutter/algolia_helper_flutter.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -74,56 +73,6 @@ class _ImageGaleryHomeState extends State<ImageGaleryHome> {
   Stream<HitsPage> get _searchPage =>
       _productsSearcher.responses.map(HitsPage.fromResponse);
   //pages
-  Widget _hits(BuildContext context) => PagedListView<int, ImageAlgolia>(
-      pagingController: _pagingController,
-      builderDelegate: PagedChildBuilderDelegate<ImageAlgolia>(
-          noItemsFoundIndicatorBuilder: (_) => const Center(
-                child: Text('No results found'),
-              ),
-          itemBuilder: (_, item, __) => Container(
-                color: Colors.white,
-                height: 80,
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                    SizedBox(
-                        width: 50,
-                        child: FutureBuilder<String>(
-                          future: ImageService.getImageUrl(imageName: item.name, isLowRes: true, dbService: widget.dbs),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<String> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return const Padding(
-                                padding: EdgeInsets.all(50.0),
-                                child: CircularProgressIndicator(),
-                              ); // or some placeholder
-                            } else if (snapshot.hasError) {
-                              if (kDebugMode) {
-                                print('Error: ${snapshot.error}');
-                              }
-                              return Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text("name: ${item.name}"),
-                                  Text("Error: ${snapshot.error}")
-                                ],
-                              );
-                            } else {
-                              return Row(
-                                children: [
-                                  Image.network(snapshot.data!),
-                                  Text(item.name),
-                                  Text("name: ${item.name}")
-                                ],
-                              );
-                            }
-                          },
-                        ))
-                  ],
-                ),
-              )));
 
   //replaced methods
   @override
@@ -189,6 +138,13 @@ class _ImageGaleryHomeState extends State<ImageGaleryHome> {
                   prefixIcon: Icon(Icons.search, color: Colors.white),
                   hintText: 'Search...',
                   hintStyle: TextStyle(color: Colors.white),
+                  suffixIcon: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 3, 15, 3),
+                    child: ImageIcon(
+                      AssetImage('assets/Algolia-mark-white.png'),
+                      size: 10,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -229,12 +185,9 @@ class _ImageGaleryHomeState extends State<ImageGaleryHome> {
                           ); // Navigate on tap
                         },
 
-                        child: Container(
-                          // Removed green border
-                          child: Image(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(snapshot.data.toString()),
-                          ),
+                        child: Image(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(snapshot.data.toString()),
                         ),
                       );
                     }
