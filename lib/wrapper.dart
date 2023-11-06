@@ -4,10 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:tennisfundacionapp/pages/home/Home.dart';
 import 'package:tennisfundacionapp/pages/home/login.dart';
 import 'package:tennisfundacionapp/services/authentication_service.dart';
+import 'package:tennisfundacionapp/services/database_service.dart';
 
 class Wrapper extends StatelessWidget {
   final AuthService auth;
-  const Wrapper({super.key, required this.auth});
+  final DBService dbs;
+  const Wrapper({super.key, required this.auth, required this.dbs});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class Wrapper extends StatelessWidget {
     if (user == null) {
       return Login(auth: auth);
     } else {
-      return const Home();
+      return Home(dbs: dbs);
     }
   }
 }

@@ -210,7 +210,32 @@ class _LoginState extends State<Login> {
                                     ),
                                   ],
                                 ),
-                                const SizedBox(height: 80),
+                                const SizedBox(height: 25),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context, '/donate');
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(30),
+                                      color: Colors.white,
+                                    ),
+                                    child: Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text(
+                                          'Donar',
+                                          style: TextStyle(
+                                            color: Colors.green[700],
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
                                 GestureDetector(
                                   onTap: () {
                                     Navigator.pushNamed(context, '/register');

@@ -81,7 +81,7 @@ class _MyAppState extends State<MyApp> {
       child: MaterialApp(
         routes: getAppRoutes(auth, dbs, st),
         theme: generalTheme,
-        home: Wrapper(auth: auth),
+        home: Wrapper(auth: auth, dbs: dbs),
       ),
     );
   }
