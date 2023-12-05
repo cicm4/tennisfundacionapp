@@ -36,15 +36,6 @@ class HitsPage {
 
   factory HitsPage.fromResponse(SearchResponse response) {
     final items = response.hits.map(ImageAlgolia.fromJson).toList();
-
-    //debug, print items:
-    //print("DEBUG STATEMENT: IMAGE ALGOLIA INFROMATION:
-    //for(var i = 0; i < items.length; i++) {
-    //  print(items[i].name);
-    //}
-    //print("END DEBUG STATEMENT");
-    //end debug
-
     final isLastPage = response.page >= response.nbPages;
     final nextPageKey = isLastPage ? null : response.page + 1;
 

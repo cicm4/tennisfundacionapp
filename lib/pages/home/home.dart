@@ -99,6 +99,21 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
+            const SizedBox(height: 20),
+            GestureDetector(
+              onTap: () {
+                // Call your sign-out function here
+                Navigator.pushNamed(context, '/calendar');
+              },
+              child: const Text(
+                'Calendar',
+                style: TextStyle(
+                  fontSize: 14, // Making text small
+                  color: Colors.blue, // Text color blue
+                  decoration: TextDecoration.underline, // Underlined text
+                ),
+              ),
+            ),
              if (isAdmin) // This widget will only be added if the user is an admin
               const SizedBox(height: 20),
             if (isAdmin)

@@ -51,6 +51,7 @@ dependencies:
   flutter_image_compress: ^2.1.0
   mime: ^1.0.4
   pay: ^1.1.2
+  table_calendar: ^3.0.9
 
 dev_dependencies:
   flutter_test:
